@@ -47,9 +47,7 @@ public class GameScreen extends BaseScreen {
                 currentState = State.PLAY;
             }
         }else if(currentState == State.PLAY){
-            if(Gdx.input.isTouched()) {
-                bucket.update();
-            }
+            bucket.update();
         }
     }
 

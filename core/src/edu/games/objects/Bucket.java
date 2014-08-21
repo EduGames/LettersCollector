@@ -21,8 +21,10 @@ public class Bucket extends BaseObject {
     }
 
     public void update() {
-        position.set(Gdx.input.getX(), position.y);
-        if(position.x < 0)  position.x = 0;
-        if(position.x > Gdx.graphics.getWidth() - 64) position.x = Gdx.graphics.getWidth() - 64;
+        if(Gdx.input.isTouched()) {
+            position.set(Gdx.input.getX(), position.y);
+            if(position.x < 0)  position.x = 0;
+            if(position.x > Gdx.graphics.getWidth() - 64) position.x = Gdx.graphics.getWidth() - 64;
+        }
     }
 }

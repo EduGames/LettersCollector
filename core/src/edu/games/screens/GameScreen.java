@@ -3,8 +3,11 @@ package edu.games.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import edu.games.LettersGame;
+import edu.games.objects.Bucket;
+import edu.games.objects.MainLetter;
 
 /**
  * Created by mohheader on 20/08/14.
@@ -15,24 +18,54 @@ public class GameScreen extends BaseScreen {
     }
     State currentState = State.PAUSE;
     OrthographicCamera camera;
+    MainLetter mainLetter;
+    Bucket bucket;
 
     public GameScreen(LettersGame game) {
         super(game);
-        camera = new OrthographicCamera(320, 480);
+
+        setCamera();
+        resetGame();
+    }
+
+    private void setCamera() {
+        camera= new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        game.getBatch().setProjectionMatrix(camera.combined);
+        game.getBatch().getProjectionMatrix().setToOrtho2D(0f,0f,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        camera.update();
+    }
+
+    private void resetGame() {
+        mainLetter = new MainLetter(game.getBatch());
+        bucket = new Bucket(64,64);
     }
 
     @Override
     protected void updateWorld(float delta) {
-
+        if(currentState == State.PAUSE){
+            if(Gdx.input.justTouched()){
+                currentState = State.PLAY;
+            }
+        }else if(currentState == State.PLAY){
+            if(Gdx.input.isTouched()) {
+                bucket.update();
+            }
+        }
     }
 
     @Override
     protected void renderWorld() {
-        Gdx.gl.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        if(currentState == State.PAUSE) {
+            Gdx.gl.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        }else if(currentState == State.PLAY) {
+            Gdx.gl.glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        }
         camera.update();
-        game.getBatch().setProjectionMatrix(camera.combined);
-
-
+        game.getBatch().begin();
+        mainLetter.render();
+        bucket.render(game.getBatch());
+        game.getBatch().end();
     }
 }

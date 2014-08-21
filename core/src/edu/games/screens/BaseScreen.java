@@ -1,5 +1,6 @@
 package edu.games.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
 import edu.games.LettersGame;
@@ -9,8 +10,11 @@ import edu.games.LettersGame;
  */
 public abstract class BaseScreen implements Screen {
     LettersGame game;
+    int width,height;
     public BaseScreen(LettersGame game){
         this.game = game;
+        width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
     }
 
     @Override

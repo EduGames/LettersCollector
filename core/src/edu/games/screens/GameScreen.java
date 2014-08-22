@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import edu.games.LettersGame;
+import edu.games.helpers.InputHandler;
 import edu.games.objects.Bucket;
 import edu.games.objects.MainLetter;
 
@@ -13,17 +14,27 @@ import edu.games.objects.MainLetter;
  * Created by mohheader on 20/08/14.
  */
 public class GameScreen extends BaseScreen {
-    enum State{
+    public enum State{
         PAUSE,PLAY,GAMEOVER
     }
+
+    public State getCurrentState() {
+        return currentState;
+    }
+
     State currentState = State.PAUSE;
     OrthographicCamera camera;
     MainLetter mainLetter;
-    Bucket bucket;
+
+    public Bucket getBucket() {
+        return bucket;
+    }
+
+    private Bucket bucket;
 
     public GameScreen(LettersGame game) {
         super(game);
-
+        Gdx.input.setInputProcessor(new InputHandler(this));
         setCamera();
         resetGame();
     }
@@ -46,8 +57,6 @@ public class GameScreen extends BaseScreen {
             if(Gdx.input.justTouched()){
                 currentState = State.PLAY;
             }
-        }else if(currentState == State.PLAY){
-            bucket.update();
         }
     }
 

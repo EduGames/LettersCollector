@@ -21,10 +21,13 @@ public class Bucket extends BaseObject {
     }
 
     public void update() {
-        if(Gdx.input.isTouched()) {
-            position.set(Gdx.input.getX(), position.y);
-            if(position.x < 0)  position.x = 0;
-            if(position.x > Gdx.graphics.getWidth() - 64) position.x = Gdx.graphics.getWidth() - 64;
-        }
+        position.set(Gdx.input.getX(), position.y);
+        if(position.x < 0)  position.x = 0;
+        if(position.x > Gdx.graphics.getWidth() - 64) position.x = Gdx.graphics.getWidth() - 64;
+        bounds.setPosition(position);
+    }
+
+    public boolean containX(int screenX) {
+        return screenX > position.x && screenX < position.x + bounds.width;
     }
 }

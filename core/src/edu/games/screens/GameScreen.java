@@ -15,19 +15,20 @@ import edu.games.objects.MainLetter;
  * Created by mohheader on 20/08/14.
  */
 public class GameScreen extends BaseScreen {
-    public enum State{
-        PAUSE,PLAY,GAMEOVER
-    }
 
+
+    public enum State{
+        PAUSE,PLAY,GAMEOVER;
+    }
     public State getCurrentState() {
         return currentState;
     }
 
     State currentState = State.PAUSE;
+
     OrthographicCamera camera;
     MainLetter mainLetter;
     LettersManager lettersManager;
-
     public Bucket getBucket() {
         return bucket;
     }
@@ -50,8 +51,12 @@ public class GameScreen extends BaseScreen {
 
     private void resetGame() {
         mainLetter = new MainLetter(game.getBatch());
-        lettersManager = new LettersManager(mainLetter);
+        lettersManager = new LettersManager(this, mainLetter);
         bucket = new Bucket((Gdx.graphics.getWidth() - 64) / 2,15);
+    }
+
+    public void setGameOver() {
+        currentState = State.GAMEOVER;
     }
 
     @Override
@@ -61,7 +66,12 @@ public class GameScreen extends BaseScreen {
                 currentState = State.PLAY;
             }
         }else if(currentState == State.PLAY){
-            lettersManager.update();
+            lettersManager.update(getBucket());
+        }else if(currentState == State.GAMEOVER){
+            if(Gdx.input.justTouched()){
+                resetGame();
+                currentState = State.PLAY;
+            }
         }
     }
 
@@ -73,7 +83,7 @@ public class GameScreen extends BaseScreen {
         }else if(currentState == State.PLAY) {
             Gdx.gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        }
+        }else return;
         camera.update();
         game.getBatch().begin();
         mainLetter.render();

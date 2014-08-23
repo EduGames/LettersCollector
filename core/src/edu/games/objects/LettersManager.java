@@ -9,6 +9,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 
+import edu.games.helpers.AssetsManager;
+import edu.games.screens.GameScreen;
+
 /**
  * Created by thedreamer on 8/23/14.
  */
@@ -16,8 +19,10 @@ public class LettersManager {
     private long lastDropTime;
     private Array<Letter> raindrops;
     private MainLetter mainLetter;
-    public LettersManager(MainLetter mainLetter){
+    private GameScreen game;
+    public LettersManager(GameScreen game, MainLetter mainLetter){
         raindrops = new Array<Letter>();
+        this.game = game;
         this.mainLetter = mainLetter;
         spawnRaindrop();
     }
@@ -26,13 +31,27 @@ public class LettersManager {
         raindrops.add(raindrop);
         lastDropTime = TimeUtils.nanoTime();
     }
-    public void update(){
+    public void update(Bucket bucket){
         if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
         Iterator<Letter> iter = raindrops.iterator();
         while(iter.hasNext()) {
             Letter raindrop = iter.next();
-            raindrop.position.y -= 200 * Gdx.graphics.getDeltaTime();
-            if(raindrop.position.y + 64 < 0) iter.remove();
+            raindrop.update();
+            if(raindrop.bounds.overlaps(bucket.bounds) ) {
+                if(raindrop.letter.equals(mainLetter.getLetter())){
+                    AssetsManager.dropSound.play();
+                    iter.remove();
+                }else{
+                    game.setGameOver();
+                }
+            }
+            if(raindrop.position.y + 64 < 0) {
+                if(raindrop.letter.equals(mainLetter.getLetter())){
+                    game.setGameOver();
+                }else{
+                    iter.remove();
+                }
+            }
         }
     }
     public void render(SpriteBatch batch){

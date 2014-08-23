@@ -14,8 +14,13 @@ public class Letter extends BaseDynamicObject{
     String letter;
 
     public Letter(MainLetter mainLetter){
-        super(MathUtils.random(0, Gdx.graphics.getWidth() - 64),480,64,64);
+        super(MathUtils.random(0, Gdx.graphics.getWidth() - 20),480,20,20);
         this.letter = ArabicLetters.getRandomLetter(mainLetter.getLetter());
+    }
+
+    public void update() {
+        position.y -= 200 * Gdx.graphics.getDeltaTime();
+        bounds.setPosition(position);
     }
 
     public void render(SpriteBatch batch) {

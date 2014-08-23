@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import edu.games.LettersGame;
 import edu.games.helpers.InputHandler;
 import edu.games.objects.Bucket;
+import edu.games.objects.LettersManager;
 import edu.games.objects.MainLetter;
 
 /**
@@ -25,6 +26,7 @@ public class GameScreen extends BaseScreen {
     State currentState = State.PAUSE;
     OrthographicCamera camera;
     MainLetter mainLetter;
+    LettersManager lettersManager;
 
     public Bucket getBucket() {
         return bucket;
@@ -40,15 +42,16 @@ public class GameScreen extends BaseScreen {
     }
 
     private void setCamera() {
-        camera= new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera= new OrthographicCamera();
+        camera.setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         game.getBatch().setProjectionMatrix(camera.combined);
-        game.getBatch().getProjectionMatrix().setToOrtho2D(0f,0f,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         camera.update();
     }
 
     private void resetGame() {
         mainLetter = new MainLetter(game.getBatch());
-        bucket = new Bucket(64,64);
+        lettersManager = new LettersManager(mainLetter);
+        bucket = new Bucket((Gdx.graphics.getWidth() - 64) / 2,15);
     }
 
     @Override
@@ -57,6 +60,8 @@ public class GameScreen extends BaseScreen {
             if(Gdx.input.justTouched()){
                 currentState = State.PLAY;
             }
+        }else if(currentState == State.PLAY){
+            lettersManager.update();
         }
     }
 
@@ -66,12 +71,13 @@ public class GameScreen extends BaseScreen {
             Gdx.gl.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         }else if(currentState == State.PLAY) {
-            Gdx.gl.glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+            Gdx.gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         }
         camera.update();
         game.getBatch().begin();
         mainLetter.render();
+        lettersManager.render(game.getBatch());
         bucket.render(game.getBatch());
         game.getBatch().end();
     }

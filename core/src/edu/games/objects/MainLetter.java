@@ -3,6 +3,7 @@ package edu.games.objects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import edu.games.helpers.ArabicLetters;
 import edu.games.helpers.AssetsManager;
 
 /**
@@ -12,8 +13,9 @@ public class MainLetter {
     private String letter;
     SpriteBatch batch;
 
+
     public MainLetter(SpriteBatch batch) {
-        this.letter = "A";
+        this.letter = ArabicLetters.getRandomLetter();
         this.batch = batch;
     }
 
